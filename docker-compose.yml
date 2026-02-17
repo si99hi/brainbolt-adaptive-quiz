@@ -1,0 +1,13 @@
+services:
+  brainbolt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: brainbolt:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./prisma/dev.db
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    volumes:
+      - ./prisma:/app/prisma
