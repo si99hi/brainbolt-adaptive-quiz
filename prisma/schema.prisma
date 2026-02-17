@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  createdAt DateTime @default(now())
+
+  state     UserState?
+  answers   AnswerLog[]
+  score     LeaderboardScore?
+  streak    LeaderboardStreak?
+}
+
+model Question {
+  id            String   @id @default(uuid())
+  content       String
+  options       String   // JSON array of strings
+  correctOption String   
+  difficulty    Int      // 1-10
+
+  answers       AnswerLog[]
+}
+
+model UserState {
+  userId          String   @id
+  user            User     @relation(fields: [userId], references: [id])
+  currentStreak   Int      @default(0)
+  score           Float    @default(0)
+  // Store last 5 answers as binary string (1=correct, 0=wrong), e.g., "10110"
+  rollingAccuracy String   @default("") 
+  lastActive      DateTime @default(now())
+  
+  // Adaptive difficulty parameters
+  currentDifficulty Float  @default(5.0) // Internal float to track gradual changes
+  momentum          Float  @default(0.0) // Track streak intensity for difficulty jumps
+
+  version         Int      @default(0) // Optimistic concurrency control
+}
+
+model AnswerLog {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  questionId       String
+  question         Question @relation(fields: [questionId], references: [id])
+  isCorrect        Boolean
+  difficultyAtTime Float
+  timestamp        DateTime @default(now())
+  
+  idempotencyKey   String?  @unique
+}
+
+model LeaderboardScore {
+  userId    String   @id
+  user      User     @relation(fields: [userId], references: [id])
+  score     Float
+  updatedAt DateTime @updatedAt
+  username  String   // Denormalized for fast read
+}
+
+model LeaderboardStreak {
+  userId    String   @id
+  user      User     @relation(fields: [userId], references: [id])
+  streak    Int
+  updatedAt DateTime @updatedAt
+  username  String   // Denormalized for fast read
+}
