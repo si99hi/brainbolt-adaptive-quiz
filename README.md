@@ -5,7 +5,7 @@ BrainBolt is an adaptive infinite quiz platform that dynamically adjusts questio
 ## 🎥 Project Demo
 
 ### ▶️ Watch Full Demo (Recommended)
-[![Watch BrainBolt Demo](https://img.youtube.com/vi/YOUTUBE_ID/0.jpg)](https://www.youtube.com/watch?v=tqBMCFnBgPo)
+[![Watch BrainBolt Demo](https://img.youtube.com/vi/YOUTUBE_ID/0.jpg)](https://www.youtube.com/watch?v=fDcrJgF0Dbs)
 
 > Click thumbnail to watch full demo on YouTube
 
@@ -41,6 +41,7 @@ Make sure Docker is installed.
 
 ```bash
 docker-compose up --build
+
 
 
 
